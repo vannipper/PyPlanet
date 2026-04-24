@@ -1,0 +1,4 @@
+.vscode/
+**/__init__.py
+**/__pycache__/
+maps/*

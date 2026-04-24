@@ -1,0 +1,13 @@
+name: planet-explorer
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy
+  - pip
+  - pip:
+    - pygame
+    - PyOpenGL
+    - PyOpenGL-accelerate
+    - vnoise
