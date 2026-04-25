@@ -19,8 +19,8 @@ class SceneRenderer:
         
         if initial_target:
             self.animations.focus_x = initial_target.px
+            self.animations.focus_y = getattr(initial_target, 'py', 0.0)
             self.animations.focus_z = initial_target.pz
-            self.animations.current_target = initial_target
 
     def init_lighting(self):
         glEnable(GL_LIGHTING)
@@ -46,32 +46,61 @@ class SceneRenderer:
             
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        # Ensure far plane is large enough for scaled solar system zoom
-        gluPerspective(45, (config.WIDTH / config.HEIGHT), 0.1, 100000.0)
+        
+        gluPerspective(45, (config.WIDTH / config.HEIGHT), 1.0, 1000000.0)
         
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        glDisable(GL_DEPTH_TEST)
         glDisable(GL_LIGHTING)
+
+        focus_x = self.animations.focus_x
+        focus_y = getattr(self.animations, 'focus_y', 0.0)
+        focus_z = self.animations.focus_z
 
         glTranslatef(0, 0, camera.get_zoom_level())
         glRotatef(camera.pitch, 1, 0, 0)
         glRotatef(camera.yaw, 0, 1, 0)
+        glTranslatef(-focus_x, -focus_y, -focus_z)
 
-        stars.draw()
-
-        glTranslatef(-self.animations.focus_x, 0, -self.animations.focus_z)
+        RENDER_THRESHOLD = 8000.0 
         
-        self.orbit_viz.draw(planets, self.animations.marker_alphas)
+        glDisable(GL_DEPTH_TEST)
+        glPointSize(1.5)
+        glBegin(GL_POINTS)
+        for star in stars:
+            dx = star.px - focus_x
+            dy = star.py - focus_y
+            dz = star.pz - focus_z
+            dist = math.sqrt(dx**2 + dy**2 + dz**2)
+
+            if dist > RENDER_THRESHOLD:
+                glColor3fv(star.marker_color)
+                glVertex3f(star.px, star.py, star.pz)
+        glEnd()
 
         glEnable(GL_DEPTH_TEST)
         
+        for star in stars:
+            dx = star.px - focus_x
+            dy = star.py - focus_y
+            dz = star.pz - focus_z
+            dist = math.sqrt(dx**2 + dy**2 + dz**2)
+
+            if dist <= RENDER_THRESHOLD:
+                glColor3fv(star.marker_color)
+                glPushMatrix()
+                glTranslatef(star.px, star.py, star.pz)
+                star.draw(camera)
+                glPopMatrix()
+
+        self.orbit_viz.draw(planets, self.animations.marker_alphas)
+
         modelview = glGetDoublev(GL_MODELVIEW_MATRIX)
         projection = glGetDoublev(GL_PROJECTION_MATRIX)
         viewport = glGetIntegerv(GL_VIEWPORT)
         
-        win_x, win_y, win_z = gluProject(sun.px, 0.0, sun.pz, modelview, projection, viewport)
-        edge_x, edge_y, _ = gluProject(sun.px + sun.radius, 0.0, sun.pz, modelview, projection, viewport)
+        win_x, win_y, win_z = gluProject(sun.px, sun.py, sun.pz, modelview, projection, viewport)
+        edge_x, edge_y, _ = gluProject(sun.px + sun.radius, sun.py, sun.pz, modelview, projection, viewport)
         
         if 0.0 < win_z < 1.0:
             self.sun_screen_pos = (win_x, win_y)
@@ -116,3 +145,25 @@ class SceneRenderer:
             if dist <= expanded_radius:
                 return sun
         return None
+
+    def get_clicked_star(self, mouse_x, mouse_y, stars):
+        """Projects 3D stars to 2D screen space to detect clicks (DEBUG ONLY)."""
+        modelview = glGetDoublev(GL_MODELVIEW_MATRIX)
+        projection = glGetDoublev(GL_PROJECTION_MATRIX)
+        viewport = glGetIntegerv(GL_VIEWPORT)
+        
+        gl_mouse_y = config.HEIGHT - mouse_y
+        
+        closest_star = None
+        min_dist = 10.0
+        
+        for star in stars:
+            win_x, win_y, win_z = gluProject(star.px, star.py, star.pz, modelview, projection, viewport)
+            
+            if 0.0 < win_z < 1.0:
+                dist = math.hypot(win_x - mouse_x, win_y - gl_mouse_y)
+                if dist < min_dist:
+                    min_dist = dist
+                    closest_star = star
+                    
+        return closest_star
