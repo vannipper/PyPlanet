@@ -1,4 +1,12 @@
-.vscode/
-**/__init__.py
+# VS Code: ignore everything by default, then keep shared project configs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Local environment
+env/
+
+# Cache files
 **/__pycache__/
-maps/*

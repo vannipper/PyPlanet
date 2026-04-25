@@ -1,0 +1,11 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}\\env\\python.exe",
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "python.terminal.activateEnvironment": true,
+    "python.condaPath": "C:\\Users\\vanni\\anaconda3\\Scripts\\conda.exe",
+    "terminal.integrated.env.windows": {
+        "PATH": "${workspaceFolder}\\env\\Library\\bin;${workspaceFolder}\\env\\Scripts;${workspaceFolder}\\env;${env:PATH}"
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
+}
