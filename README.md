@@ -16,19 +16,19 @@ Procedural planet and star visualization built with Python, pygame, and OpenGL.
 3. Create or update the project environment:
 
 ```powershell
-conda env update --prefix ./env --file environment.yml --prune
+conda env update --name PyPlanet --file environment.yml --prune
 ```
 
 4. Select the interpreter in VS Code:
 - Command Palette -> Python: Select Interpreter
-- Choose ${workspaceFolder}\\env\\python.exe
+- Choose the Python interpreter for the `PyPlanet` conda environment
 
 ## Running the app
 
 ### Terminal (sanity check)
 
 ```powershell
-conda run -p .\env python .\main.py
+conda run -n PyPlanet python .\main.py
 ```
 
 ### VS Code
@@ -44,7 +44,7 @@ Run and debug are configured to use the same interpreter and PATH behavior.
 When dependencies change in environment.yml, update the environment:
 
 ```powershell
-conda env update --prefix ./env --file environment.yml --prune
+conda env update --name PyPlanet --file environment.yml --prune
 ```
 
 If interpreter or package state looks stale, reload VS Code:
@@ -66,7 +66,7 @@ These files provide consistent onboarding and reduce run/debug environment misma
 
 ### Play button fails but debug works
 
-1. Confirm interpreter is ${workspaceFolder}\\env\\python.exe.
+1. Confirm the Python interpreter is set to the PyPlanet conda environment.
 2. Open a new terminal after settings changes.
 3. Reload the VS Code window.
 
@@ -79,4 +79,4 @@ This project currently relies on dependencies that still use pkg_resources, so s
 This is typically environment activation or PATH related. Use one of these:
 
 - Run through VS Code using the committed workspace settings, or
-- Run from terminal using conda run -p .\env ...
+- Run from terminal using conda run -n PyPlanet ...

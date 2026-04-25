@@ -10,11 +10,11 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
-            "python": "${workspaceFolder}\\env\\python.exe",
+            "python": "${env:USERPROFILE}\\anaconda3\\envs\\PyPlanet\\python.exe",
             "console": "integratedTerminal",
             "purpose": ["debug-in-terminal"],
             "env": {
-                "PATH": "${workspaceFolder}\\env\\Library\\bin;${workspaceFolder}\\env\\Scripts;${workspaceFolder}\\env;${env:PATH}"
+                "PATH": "${env:USERPROFILE}\\anaconda3\\envs\\PyPlanet\\Library\\bin;${env:USERPROFILE}\\anaconda3\\envs\\PyPlanet\\Scripts;${env:USERPROFILE}\\anaconda3\\envs\\PyPlanet;${env:PATH}"
             }
         }
     ]

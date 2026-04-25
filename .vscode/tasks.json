@@ -4,7 +4,7 @@
         {
             "label": "Setup Conda Environment",
             "type": "shell",
-            "command": "conda env update --prefix ./env --file environment.yml --prune",
+            "command": "conda env update --name PyPlanet --file environment.yml --prune",
             "runOptions": {
                 "runOn": "folderOpen"
             },

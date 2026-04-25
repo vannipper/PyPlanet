@@ -1,4 +1,4 @@
-name: planet-explorer
+name: PyPlanet
 channels:
   - conda-forge
   - defaults
