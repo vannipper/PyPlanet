@@ -8,7 +8,6 @@ from planet import generation
 from planet.planet import Planet
 from planet.star import Star
 
-from rendering.mesh import Mesh
 from rendering.camera import Camera
 from rendering.renderer import SceneRenderer
 

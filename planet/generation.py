@@ -113,7 +113,7 @@ def create_stars(star_count):
 
         temperature = random.uniform(3000.0, 25000.0)
         
-        new_star = Star(radius=random.uniform(5.0, 20.0), temperature=temperature, subdivisions=4)
+        new_star = Star(radius=random.uniform(5.0, 20.0), temperature=temperature, subdivisions=30, is_background=True)
         new_star.name = f"BackgroundStar_{i}"
         
         new_star.px = x

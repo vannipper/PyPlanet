@@ -15,6 +15,7 @@ class Animations:
     def update(self, target, planets, zoom_distance, debug_mode):
         if target != self.current_target:
             self.source_x = self.focus_x
+            self.focus_y = getattr(target, 'py', 0.0)
             self.source_z = self.focus_z
             self.current_target = target
             self.transition_progress = 0.0

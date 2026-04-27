@@ -87,11 +87,17 @@ class SceneRenderer:
             dist = math.sqrt(dx**2 + dy**2 + dz**2)
 
             if dist <= RENDER_THRESHOLD:
+                if not star.lods:
+                    star.generate_mesh()
+                    
                 glColor3fv(star.marker_color)
                 glPushMatrix()
                 glTranslatef(star.px, star.py, star.pz)
                 star.draw(camera)
                 glPopMatrix()
+            else:
+                if star.is_background and star.lods:
+                    star.offload_mesh()
 
         self.orbit_viz.draw(planets, self.animations.marker_alphas)
 
