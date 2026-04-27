@@ -8,7 +8,6 @@ from planet import generation
 from planet.planet import Planet
 from planet.star import Star
 
-from rendering.mesh import Mesh
 from rendering.camera import Camera
 from rendering.renderer import SceneRenderer
 
@@ -38,8 +37,7 @@ def main():
     random_size = random.uniform(15.0, 60.0)
     my_sun = Star(random_size, random_temp)
     
-    star_data = generation.create_stars(config.STAR_COUNT)
-    star_mesh = Mesh(star_data[0], colors=star_data[1], is_points=True)
+    stars = generation.create_stars(config.STAR_COUNT)
     
     camera = Camera()
     camera.target = default_target 
@@ -63,6 +61,10 @@ def main():
                     clicked_planet = renderer.planet_marker.get_clicked_planet(event.pos[0], event.pos[1])
                     clicked_sun = renderer.get_clicked_sun(event.pos[0], event.pos[1], my_sun)
                     
+                    clicked_star = None
+                    if config.DEBUG_MODE:
+                        clicked_star = renderer.get_clicked_star(event.pos[0], event.pos[1], stars)
+                    
                     if clicked_planet and camera.target != clicked_planet:
                         camera.target = clicked_planet
                         camera.min_zoom_exp = math.log(clicked_planet.radius * 1.5) / math.log(1.2)
@@ -81,6 +83,13 @@ def main():
                         required_distance = max_orbit * 2.6
                         camera.target_zoom_exp = math.log(required_distance) / math.log(1.2)
                         camera.needs_alignment = False
+                        
+                    elif clicked_star and camera.target != clicked_star:
+                        camera.target = clicked_star
+                        camera.min_zoom_exp = math.log(clicked_star.radius * 1.5) / math.log(1.2)
+                        camera.max_zoom_exp = 65.0
+                        camera.target_zoom_exp = math.log(clicked_star.radius * 5.0) / math.log(1.2)
+                        camera.needs_alignment = False
                             
                 if event.button == 4: 
                     camera.zoom(-0.75)
@@ -96,6 +105,8 @@ def main():
         
         current_fps = clock.get_fps()
         camera.update(config.DEBUG_MODE, renderer.animations.transition_progress)
+        
+        renderer.render_frame(camera, stars, my_sun, planets)
 
         if config.DEBUG_MODE:
             total_triangles = 0
@@ -106,9 +117,7 @@ def main():
                     if active_mesh.has_indices and not active_mesh.is_points:
                         total_triangles += active_mesh.index_count // 3
             
-            fps_ui.draw(current_fps, total_triangles)
-        
-        renderer.render_frame(camera, star_mesh, my_sun, planets)
+            fps_ui.draw(current_fps, total_triangles, camera.zoom_exp)
 
         pygame.display.flip()
         clock.tick(60)

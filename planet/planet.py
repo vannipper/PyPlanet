@@ -108,6 +108,7 @@ class Planet:
         self.spin = 0.0
         self.orbit_angle = 0.0
         self.px = 0.0
+        self.py = 0.0
         self.pz = 0.0
         self.axial_tilt = random.triangular(0, 90, 15)
 
