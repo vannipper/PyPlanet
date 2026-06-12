@@ -4,6 +4,7 @@ class Animations:
     """Manages smooth interpolation math for camera movements and UI fading."""
     def __init__(self):
         self.focus_x = 0.0
+        self.focus_y = 0.0
         self.focus_z = 0.0
         self.marker_alphas = {}
         
@@ -15,16 +16,19 @@ class Animations:
     def update(self, target, planets, zoom_distance, debug_mode):
         if target != self.current_target:
             self.source_x = self.focus_x
+            self.source_y = self.focus_y
             self.source_z = self.focus_z
             self.current_target = target
             self.transition_progress = 0.0
 
         target_x = target.px if target else 0.0
+        target_y = getattr(target, 'py', 0.0) if target else 0.0
         target_z = target.pz if target else 0.0
 
         if debug_mode:
             self.transition_progress = 1.0
             self.focus_x = target_x
+            self.focus_y = target_y
             self.focus_z = target_z
         else:
             if self.transition_progress < 1.0:
@@ -36,6 +40,7 @@ class Animations:
             ease = t * t * (3 - 2 * t)
 
             self.focus_x = self.source_x + (target_x - self.source_x) * ease
+            self.focus_y = self.source_y + (target_y - self.source_y) * ease
             self.focus_z = self.source_z + (target_z - self.source_z) * ease
 
         for planet in planets:
